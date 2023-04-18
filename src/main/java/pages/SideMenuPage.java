@@ -9,7 +9,7 @@ public class SideMenuPage extends BasePage{
         super(driver);
     }
 
-    @FindBy(css = "#Menu > div.awe-mcontent > div.awe-content.awe-tablc > div > div > a:nth-child(44)")
+    @FindBy(css = "a:nth-child(45)")
     private WebElement popUpFormButton;
 
     public void goToPopUpForm(){

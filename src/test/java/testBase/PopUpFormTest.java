@@ -1,14 +1,15 @@
 package testBase;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+import pages.ConfirmationPopUpPage;
 import pages.PopUpFormMenuPage;
 import pages.PopUpFormPage;
 import pages.SideMenuPage;
 
-import java.lang.reflect.InvocationTargetException;
 
 public class PopUpFormTest extends TestBase{
 
@@ -16,7 +17,7 @@ public class PopUpFormTest extends TestBase{
     @CsvFileSource(resources = "/popUpFormData.csv")
     @Tag("regression")
     @DisplayName("Pop_Up_Form_Test")
-    public void validatePopUpForm(String name) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void validatePopUpForm(String name, String confirmationMessage, int numberOfMeals) {
 
         at(SideMenuPage.class).
                 goToPopUpForm();
@@ -26,6 +27,18 @@ public class PopUpFormTest extends TestBase{
 
         at(PopUpFormPage.class).
                 provideName(name).
-                selectChef();
+                selectDate().
+                selectChef().
+                selectMeal(numberOfMeals).
+                selectBonusMeal().
+                submitForm();
+
+        String confirmationInfo = at(ConfirmationPopUpPage.class).
+                getConfirmationPopUpInfo();
+
+        Assertions.assertThat(confirmationInfo).isEqualTo(confirmationMessage);
+
+        at(ConfirmationPopUpPage.class).
+                acceptConfirmationPopUp();
     }
 }

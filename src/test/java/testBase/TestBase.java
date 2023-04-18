@@ -1,6 +1,7 @@
 package testBase;
 
 import configuration.AppProperties;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,9 +38,8 @@ public class TestBase {
         driver.quit();
         log.info("Driver has been closed.");
     }
-
-    public <T extends BasePage> T at(Class<T> pageType) throws NoSuchMethodException, InvocationTargetException,
-            InstantiationException, IllegalAccessException {
+    @SneakyThrows
+    public <T extends BasePage> T at(Class<T> pageType){
         log.info("Creating PageObject: " + pageType.getName());
         return pageType.getDeclaredConstructor(WebDriver.class).newInstance(driver);
     }

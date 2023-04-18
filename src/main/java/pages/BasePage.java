@@ -1,14 +1,11 @@
 package pages;
 
-import configuration.WebListener;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.events.internal.EventFiringMouse;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -22,8 +19,6 @@ public class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
     protected Actions actions;
-    private EventFiringMouse eventFiringMouse;
-    private WebListener webListener = new WebListener();
 
     public BasePage(WebDriver driver) {
         initDriver(driver);
@@ -53,23 +48,6 @@ public class BasePage {
         log.info("Waiting for " + webElement.getText() + " to be visible.");
     }
 
-    public void mouseHover(WebElement webElement) {
-        waitForElementToBeVisible(webElement);
-        eventFiringMouse = new EventFiringMouse(driver, webListener);
-        Locatable item = (Locatable) webElement;
-        Coordinates coordinates = item.getCoordinates();
-        eventFiringMouse.mouseMove(coordinates);
-        log.info(webElement + " has been moved.");
-    }
-
-    public void mouseClick(WebElement webElement) {
-        waitForElementToBeVisible(webElement);
-        eventFiringMouse = new EventFiringMouse(driver, webListener);
-        Locatable item = (Locatable) webElement;
-        Coordinates coordinates = item.getCoordinates();
-        eventFiringMouse.click(coordinates);
-        log.info(webElement + " has been clicked.");
-    }
     public void sendKeys(WebElement element, String text) {
         element.sendKeys(text);
         log.info("Typing " + text);
@@ -77,5 +55,22 @@ public class BasePage {
 
     public <T> T getRandomElement(List<T> list) {
         return list.get(new Random().nextInt(list.size()));
+    }
+
+    public void scrollToElement(WebElement element) {
+        waitForElementToBeClickableBool(element);
+        actions.scrollToElement(element).perform();
+    }
+    public boolean waitForElementToBeClickableBool(WebElement element) {
+        boolean flag = false;
+        try {
+            wait.ignoring(StaleElementReferenceException.class)
+                    .until(ExpectedConditions.elementToBeClickable(element));
+            flag = true;
+            return flag;
+
+        } catch (Exception Ex) {
+            return flag;
+        }
     }
 }

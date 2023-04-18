@@ -9,7 +9,7 @@ public class PopUpFormMenuPage extends BasePage{
         super(driver);
     }
 
-    @FindBy(css = "#maincont > div:nth-child(6) > button")
+    @FindBy(css = "div:nth-child(6)>button")
     private WebElement createButton;
 
     public void createPopUpForm(){
